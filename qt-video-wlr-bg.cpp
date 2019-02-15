@@ -1,4 +1,5 @@
 #include <QtCore/QUrl>
+#include <QtCore/QCommandLineParser>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QPushButton>
@@ -54,6 +55,17 @@ int main(int argc,char *argv[]){
 	// hack: disable shell integration
 	setenv("QT_WAYLAND_SHELL_INTEGRATION","nonexistance",1);
 	QApplication app(argc, argv);
+	QApplication::setApplicationName("qt-video-wlr");
+	QApplication::setApplicationVersion("dev");
+
+	QCommandLineParser parser;
+	parser.setApplicationDescription("Qt pip-mode-like video player "
+		"for wlroots based wayland compositor");
+	parser.addHelpOption();
+	parser.addVersionOption();
+	parser.addPositionalArgument("FILE","Files to play.","FILE...");
+	parser.process(app);
+
 	QPlatformNativeInterface *native = QGuiApplication::platformNativeInterface();
 	struct wl_display *display = (struct wl_display *)
 		native->nativeResourceForWindow("display", NULL);
@@ -67,14 +79,12 @@ int main(int argc,char *argv[]){
 
 	auto player = new QMediaPlayer;
 	auto playlist = new QMediaPlaylist;
-	QStringList cmdline_args = QCoreApplication::arguments();
-	if(cmdline_args.size()<2){
-		std::cerr<<"Usage: "<<cmdline_args.at(0).toLocal8Bit().constData()
-			<<" FILES..."<<std::endl;
-		return 1;
+	QStringList pos_args = parser.positionalArguments();
+	if(pos_args.size() == 0){
+		parser.showHelp(1);
 	}
-	for(int a=1;a<cmdline_args.size();a++)
-		playlist->addMedia(QUrl::fromLocalFile(cmdline_args.at(a)));
+	for(int a = 0;a < pos_args.size();a++)
+		playlist->addMedia(QUrl::fromLocalFile(pos_args.at(a)));
 	playlist->setPlaybackMode(QMediaPlaylist::Loop);
 	player->setPlaylist(playlist);
 
