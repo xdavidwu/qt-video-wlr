@@ -51,6 +51,8 @@ struct zwlr_layer_surface_v1_listener layer_surface_listener = {
 };
 
 int main(int argc,char *argv[]){
+	// hack: disable shell integration
+	setenv("QT_WAYLAND_SHELL_INTEGRATION","nonexistance",1);
 	QApplication app(argc, argv);
 	QPlatformNativeInterface *native = QGuiApplication::platformNativeInterface();
 	struct wl_display *display = (struct wl_display *)

@@ -15,10 +15,8 @@ g++ qt-video-wlr-bg.cpp wlr-layer-shell-unstable-v1-protocol.o xdg-shell-protoco
 To run:
 
 ```sh
-QT_WAYLAND_SHELL_INTEGRATION=foo ./qt-video-wlr FILES...
+./qt-video-wlr FILES...
 ```
-
-`QT_WAYLAND_SHELL_INTEGRATION` needs to be set to shell integration that doesn't exist to prevent qt from assigning role to window.
 
 Paths are based on Archlinux and might be different on other distro.
 
