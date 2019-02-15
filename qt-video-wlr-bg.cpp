@@ -64,7 +64,24 @@ int main(int argc,char *argv[]){
 	parser.addHelpOption();
 	parser.addVersionOption();
 	parser.addPositionalArgument("FILE","Files to play.","FILE...");
+	QCommandLineOption layerOption(QStringList() << "l" << "layer",
+		"Layer to render on, background, bottom, top or overlay."
+		" Defaults to top.", "layer");
+	parser.addOption(layerOption);
 	parser.process(app);
+
+	uint32_t layer = ZWLR_LAYER_SHELL_V1_LAYER_TOP;
+	if(parser.isSet(layerOption)){
+		QString str = parser.value(layerOption);
+		if(str == "background")
+			layer = ZWLR_LAYER_SHELL_V1_LAYER_BACKGROUND;
+		else if(str == "bottom")
+			layer = ZWLR_LAYER_SHELL_V1_LAYER_BOTTOM;
+		else if(str == "overlay")
+			layer = ZWLR_LAYER_SHELL_V1_LAYER_OVERLAY;
+		else if(str != "top")
+			parser.showHelp(1);
+	}
 
 	QPlatformNativeInterface *native = QGuiApplication::platformNativeInterface();
 	struct wl_display *display = (struct wl_display *)
@@ -72,10 +89,10 @@ int main(int argc,char *argv[]){
 	struct wl_registry *registry = wl_display_get_registry(display);
 	wl_registry_add_listener(registry, &registry_listener, NULL);
 	wl_display_roundtrip(display);
-	if (layer_shell == NULL) {
+	if(layer_shell == NULL){
 		fprintf(stderr, "layer_shell not available\n");
 		return 1;
-	}	
+	}
 
 	auto player = new QMediaPlayer;
 	auto playlist = new QMediaPlaylist;
@@ -94,7 +111,7 @@ int main(int argc,char *argv[]){
 	wl_surface = static_cast<struct wl_surface *>(
 		native->nativeResourceForWindow("surface", root.windowHandle()));
 	layer_surface = zwlr_layer_shell_v1_get_layer_surface(layer_shell,
-			wl_surface, NULL, ZWLR_LAYER_SHELL_V1_LAYER_TOP, "foo");
+			wl_surface, NULL, layer, "foo");
 	zwlr_layer_surface_v1_set_size(layer_surface, 320, 240);
 	zwlr_layer_surface_v1_set_anchor(layer_surface,ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT|
 			ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM);
