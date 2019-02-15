@@ -15,6 +15,11 @@ struct zwlr_layer_surface_v1 *layer_surface;
 static struct wl_output *wl_output;
 struct wl_surface *wl_surface;
 
+uint32_t width = 320, height = 240;
+
+QWidget *root;
+QVideoWidget *videoWidget;
+
 static void handle_global(void *data, struct wl_registry *registry,
 		uint32_t name, const char *interface, uint32_t version) {
 	if (strcmp(interface, zwlr_layer_shell_v1_interface.name) == 0) {
@@ -37,6 +42,8 @@ static void layer_surface_configure(void *data,
 		struct zwlr_layer_surface_v1 *surface,
 		uint32_t serial, uint32_t w, uint32_t h) {
 	printf("resize %d  %d\n",w,h);
+	root->resize(w, h);
+	videoWidget->resize(w ,h);
 	zwlr_layer_surface_v1_ack_configure(surface, serial);
 }
 
@@ -67,7 +74,13 @@ int main(int argc,char *argv[]){
 	QCommandLineOption layerOption(QStringList() << "l" << "layer",
 		"Layer to render on, background, bottom, top or overlay."
 		" Defaults to top.", "layer");
+	QCommandLineOption widthOption(QStringList() << "w" << "width",
+		"Widget width. 0 to use max width. Defaults to 320.", "width");
+	QCommandLineOption heightOption(QStringList() << "e" << "height",
+		"Widget height. 0 to use max height. Defaults to 240.", "height");
 	parser.addOption(layerOption);
+	parser.addOption(widthOption);
+	parser.addOption(heightOption);
 	parser.process(app);
 
 	uint32_t layer = ZWLR_LAYER_SHELL_V1_LAYER_TOP;
@@ -81,6 +94,16 @@ int main(int argc,char *argv[]){
 			layer = ZWLR_LAYER_SHELL_V1_LAYER_OVERLAY;
 		else if(str != "top")
 			parser.showHelp(1);
+	}
+	if(parser.isSet(widthOption)){
+		bool ok;
+		width = parser.value(widthOption).toInt(&ok, 10);
+		if(!ok||width < 0) parser.showHelp(1);
+	}
+	if(parser.isSet(heightOption)){
+		bool ok;
+		height = parser.value(heightOption).toInt(&ok, 10);
+		if(!ok||height < 0) parser.showHelp(1);
 	}
 
 	QPlatformNativeInterface *native = QGuiApplication::platformNativeInterface();
@@ -105,23 +128,23 @@ int main(int argc,char *argv[]){
 	playlist->setPlaybackMode(QMediaPlaylist::Loop);
 	player->setPlaylist(playlist);
 
-	QWidget root;
-	root.resize(320,240);
-	root.show();
+	root = new QWidget;
+	videoWidget = new QVideoWidget(root);
+	root->resize(width ? width : 1, height ? height : 1);
+	root->show();
 	wl_surface = static_cast<struct wl_surface *>(
-		native->nativeResourceForWindow("surface", root.windowHandle()));
+		native->nativeResourceForWindow("surface", root->windowHandle()));
 	layer_surface = zwlr_layer_shell_v1_get_layer_surface(layer_shell,
 			wl_surface, NULL, layer, "foo");
-	zwlr_layer_surface_v1_set_size(layer_surface, 320, 240);
+	zwlr_layer_surface_v1_set_size(layer_surface, width, height);
 	zwlr_layer_surface_v1_set_anchor(layer_surface,ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT|
 			ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM);
 	zwlr_layer_surface_v1_add_listener(layer_surface, &layer_surface_listener, layer_surface);
 	wl_surface_commit(wl_surface);
 	wl_display_roundtrip(display);
 
-	auto videoWidget = new QVideoWidget(&root);
 	player->setVideoOutput(videoWidget);
- 	videoWidget->setMinimumSize(320,240);
+	videoWidget->setMinimumSize(width ? width : 1, height ? height : 1);
 	videoWidget->show();
 	player->play();
 	
