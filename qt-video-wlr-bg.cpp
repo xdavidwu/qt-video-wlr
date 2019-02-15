@@ -18,6 +18,7 @@ struct wl_surface *wl_surface;
 
 uint32_t width = 320, height = 240;
 
+QApplication *app;
 QWidget *root;
 QVideoWidget *videoWidget;
 
@@ -59,10 +60,15 @@ struct zwlr_layer_surface_v1_listener layer_surface_listener = {
 	.closed = layer_surface_closed,
 };
 
+void playerStateSlot(QMediaPlayer::State state){
+	if(state == QMediaPlayer::StoppedState)
+		app->quit();
+}
+
 int main(int argc,char *argv[]){
 	// hack: disable shell integration
 	setenv("QT_WAYLAND_SHELL_INTEGRATION","nonexistance",1);
-	QApplication app(argc, argv);
+	app = new QApplication(argc, argv);
 	QApplication::setApplicationName("qt-video-wlr");
 	QApplication::setApplicationVersion("dev");
 
@@ -87,13 +93,16 @@ int main(int argc,char *argv[]){
 		"Widget position, top, top-left, top-right, bottom, "
 		"bottom-left, bottom-right, left or right. Defaults "
 		"to bottom-right.", "position");
+	QCommandLineOption loopOption(QStringList() << "n" << "no-loop",
+		"Do not loop. Defaults to loop.");
 	parser.addOption(layerOption);
 	parser.addOption(widthOption);
 	parser.addOption(heightOption);
 	parser.addOption(colorOption);
 	parser.addOption(volumeOption);
 	parser.addOption(positionOption);
-	parser.process(app);
+	parser.addOption(loopOption);
+	parser.process(*app);
 
 	uint32_t layer = ZWLR_LAYER_SHELL_V1_LAYER_TOP;
 	uint32_t anchor = ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT |
@@ -166,7 +175,8 @@ int main(int argc,char *argv[]){
 	for(int a = 0;a < pos_args.size();a++)
 		playlist->addMedia(QUrl::fromLocalFile(QFileInfo(pos_args.at(a))
 			.absoluteFilePath()));
-	playlist->setPlaybackMode(QMediaPlaylist::Loop);
+	if(!parser.isSet(loopOption))
+		playlist->setPlaybackMode(QMediaPlaylist::Loop);
 	player->setPlaylist(playlist);
 	if(parser.isSet(volumeOption)){
 		bool ok;
@@ -204,6 +214,7 @@ int main(int argc,char *argv[]){
 	}
 	videoWidget->show();
 	player->play();
-	
-	return app.exec();
+	QObject::connect(player, &QMediaPlayer::stateChanged, playerStateSlot);
+
+	return app->exec();
 }

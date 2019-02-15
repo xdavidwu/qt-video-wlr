@@ -31,6 +31,7 @@ Options:
   -p, --position <position>  Widget position, top, top-left, top-right, bottom,
                              bottom-left, bottom-right, left or right. Defaults
                              to bottom-right.
+  -n, --no-loop              Do not loop. Defaults to loop.
 
 Arguments:
   FILE                   Files to play.
