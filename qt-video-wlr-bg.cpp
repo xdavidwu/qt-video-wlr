@@ -1,4 +1,5 @@
 #include <QtCore/QUrl>
+#include <QtCore/QFileInfo>
 #include <QtCore/QCommandLineParser>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QWidget>
@@ -124,7 +125,8 @@ int main(int argc,char *argv[]){
 		parser.showHelp(1);
 	}
 	for(int a = 0;a < pos_args.size();a++)
-		playlist->addMedia(QUrl::fromLocalFile(pos_args.at(a)));
+		playlist->addMedia(QUrl::fromLocalFile(QFileInfo(pos_args.at(a))
+			.absoluteFilePath()));
 	playlist->setPlaybackMode(QMediaPlaylist::Loop);
 	player->setPlaylist(playlist);
 
@@ -135,10 +137,10 @@ int main(int argc,char *argv[]){
 	wl_surface = static_cast<struct wl_surface *>(
 		native->nativeResourceForWindow("surface", root->windowHandle()));
 	layer_surface = zwlr_layer_shell_v1_get_layer_surface(layer_shell,
-			wl_surface, NULL, layer, "foo");
+		wl_surface, NULL, layer, "foo");
 	zwlr_layer_surface_v1_set_size(layer_surface, width, height);
 	zwlr_layer_surface_v1_set_anchor(layer_surface,ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT|
-			ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM);
+		ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM);
 	zwlr_layer_surface_v1_add_listener(layer_surface, &layer_surface_listener, layer_surface);
 	wl_surface_commit(wl_surface);
 	wl_display_roundtrip(display);
