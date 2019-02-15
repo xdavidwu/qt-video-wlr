@@ -19,14 +19,18 @@ Usage: ./qt-video-wlr [options] FILE...
 Qt pip-mode-like video player for wlroots based wayland compositor
 
 Options:
-  -h, --help             Displays this help.
-  -v, --version          Displays version information.
-  -l, --layer <layer>    Layer to render on, background, bottom, top or
-                         overlay. Defaults to top.
-  -w, --width <width>    Widget width. 0 to use max width. Defaults to 320.
-  -e, --height <height>  Widget height. 0 to use max height. Defaults to 240.
-  -c, --color <color>    Background color, QColor::setNamedColor() format.
-  -s, --volume <volume>  Linear sound volume, [0,100]. Defaults to 100.
+  -h, --help                 Displays this help.
+  -v, --version              Displays version information.
+  -l, --layer <layer>        Layer to render on, background, bottom, top or
+                             overlay. Defaults to top.
+  -w, --width <width>        Widget width. 0 to use max width. Defaults to 320.
+  -e, --height <height>      Widget height. 0 to use max height. Defaults to
+                             240.
+  -c, --color <color>        Background color, QColor::setNamedColor() format.
+  -s, --volume <volume>      Linear sound volume, [0,100]. Defaults to 100.
+  -p, --position <position>  Widget position, top, top-left, top-right, bottom,
+                             bottom-left, bottom-right, left or right. Defaults
+                             to bottom-right.
 
 Arguments:
   FILE                   Files to play.

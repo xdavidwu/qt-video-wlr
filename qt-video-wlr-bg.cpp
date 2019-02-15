@@ -83,14 +83,21 @@ int main(int argc,char *argv[]){
 		"Background color, QColor::setNamedColor() format.", "color");
 	QCommandLineOption volumeOption(QStringList() << "s" << "volume",
 		"Linear sound volume, [0,100]. Defaults to 100.", "volume");
+	QCommandLineOption positionOption(QStringList() << "p" << "position",
+		"Widget position, top, top-left, top-right, bottom, "
+		"bottom-left, bottom-right, left or right. Defaults "
+		"to bottom-right.", "position");
 	parser.addOption(layerOption);
 	parser.addOption(widthOption);
 	parser.addOption(heightOption);
 	parser.addOption(colorOption);
 	parser.addOption(volumeOption);
+	parser.addOption(positionOption);
 	parser.process(app);
 
 	uint32_t layer = ZWLR_LAYER_SHELL_V1_LAYER_TOP;
+	uint32_t anchor = ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT |
+		ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM;
 	if(parser.isSet(layerOption)){
 		QString str = parser.value(layerOption);
 		if(str == "background")
@@ -111,6 +118,32 @@ int main(int argc,char *argv[]){
 		bool ok;
 		height = parser.value(heightOption).toInt(&ok, 10);
 		if(!ok||height < 0) parser.showHelp(1);
+	}
+	if(parser.isSet(positionOption)){
+		QString str = parser.value(positionOption);
+		if(str == "top")
+			anchor = ZWLR_LAYER_SURFACE_V1_ANCHOR_TOP;
+		else if(str == "top-left")
+			anchor = ZWLR_LAYER_SURFACE_V1_ANCHOR_TOP |
+				ZWLR_LAYER_SURFACE_V1_ANCHOR_LEFT;
+		else if(str == "top-right")
+			anchor = ZWLR_LAYER_SURFACE_V1_ANCHOR_TOP |
+				ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT;
+		else if(str == "bottom")
+			anchor = ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM;
+		else if(str == "bottom-left")
+			anchor = ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM |
+				ZWLR_LAYER_SURFACE_V1_ANCHOR_LEFT;
+		else if(str == "left")
+			anchor = ZWLR_LAYER_SURFACE_V1_ANCHOR_LEFT;
+		else if(str == "right")
+			anchor = ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT;
+		else if(str != "bottom-right")
+			parser.showHelp(1);
+		if(width == 0)
+			anchor |= ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT;
+		if(height == 0)
+			anchor |= ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM;
 	}
 
 	QPlatformNativeInterface *native = QGuiApplication::platformNativeInterface();
@@ -150,8 +183,7 @@ int main(int argc,char *argv[]){
 	layer_surface = zwlr_layer_shell_v1_get_layer_surface(layer_shell,
 		wl_surface, NULL, layer, "foo");
 	zwlr_layer_surface_v1_set_size(layer_surface, width, height);
-	zwlr_layer_surface_v1_set_anchor(layer_surface,ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT|
-		ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM);
+	zwlr_layer_surface_v1_set_anchor(layer_surface, anchor);
 	zwlr_layer_surface_v1_add_listener(layer_surface, &layer_surface_listener, layer_surface);
 	wl_surface_commit(wl_surface);
 	wl_display_roundtrip(display);
