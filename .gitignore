@@ -1,0 +1,5 @@
+a.out
+core
+*-protocol.h
+*-protocol.c
+*.o
