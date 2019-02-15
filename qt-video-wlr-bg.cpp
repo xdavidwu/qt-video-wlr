@@ -81,10 +81,13 @@ int main(int argc,char *argv[]){
 		"Widget height. 0 to use max height. Defaults to 240.", "height");
 	QCommandLineOption colorOption(QStringList() << "c" << "color",
 		"Background color, QColor::setNamedColor() format.", "color");
+	QCommandLineOption volumeOption(QStringList() << "s" << "volume",
+		"Linear sound volume, [0,100]. Defaults to 100.", "volume");
 	parser.addOption(layerOption);
 	parser.addOption(widthOption);
 	parser.addOption(heightOption);
 	parser.addOption(colorOption);
+	parser.addOption(volumeOption);
 	parser.process(app);
 
 	uint32_t layer = ZWLR_LAYER_SHELL_V1_LAYER_TOP;
@@ -132,6 +135,11 @@ int main(int argc,char *argv[]){
 			.absoluteFilePath()));
 	playlist->setPlaybackMode(QMediaPlaylist::Loop);
 	player->setPlaylist(playlist);
+	if(parser.isSet(volumeOption)){
+		bool ok;
+		player->setVolume(parser.value(volumeOption).toInt(&ok, 10));
+		if(!ok||height < 0) parser.showHelp(1);
+	}
 
 	root = new QWidget;
 	videoWidget = new QVideoWidget(root);

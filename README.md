@@ -26,6 +26,7 @@ Options:
   -w, --width <width>    Widget width. 0 to use max width. Defaults to 320.
   -e, --height <height>  Widget height. 0 to use max height. Defaults to 240.
   -c, --color <color>    Background color, QColor::setNamedColor() format.
+  -s, --volume <volume>  Linear sound volume, [0,100]. Defaults to 100.
 
 Arguments:
   FILE                   Files to play.
