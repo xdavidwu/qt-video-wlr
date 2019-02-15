@@ -79,9 +79,12 @@ int main(int argc,char *argv[]){
 		"Widget width. 0 to use max width. Defaults to 320.", "width");
 	QCommandLineOption heightOption(QStringList() << "e" << "height",
 		"Widget height. 0 to use max height. Defaults to 240.", "height");
+	QCommandLineOption colorOption(QStringList() << "c" << "color",
+		"Background color, QColor::setNamedColor() format.", "color");
 	parser.addOption(layerOption);
 	parser.addOption(widthOption);
 	parser.addOption(heightOption);
+	parser.addOption(colorOption);
 	parser.process(app);
 
 	uint32_t layer = ZWLR_LAYER_SHELL_V1_LAYER_TOP;
@@ -147,6 +150,18 @@ int main(int argc,char *argv[]){
 
 	player->setVideoOutput(videoWidget);
 	videoWidget->setMinimumSize(width ? width : 1, height ? height : 1);
+	if(parser.isSet(colorOption)){
+		QColor qcolor(parser.value(colorOption));
+		if(!qcolor.isValid()) parser.showHelp(1);
+		QPalette pal;
+		pal.setColor(QPalette::Background, qcolor);
+		videoWidget->setAutoFillBackground(true);
+		videoWidget->setPalette(pal);
+		QPalette pal2;
+		pal2.setColor(QPalette::Background, "#00000000");
+		root->setAutoFillBackground(true);
+		root->setPalette(pal2);
+	}
 	videoWidget->show();
 	player->play();
 	

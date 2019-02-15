@@ -25,6 +25,7 @@ Options:
                          overlay. Defaults to top.
   -w, --width <width>    Widget width. 0 to use max width. Defaults to 320.
   -e, --height <height>  Widget height. 0 to use max height. Defaults to 240.
+  -c, --color <color>    Background color, QColor::setNamedColor() format.
 
 Arguments:
   FILE                   Files to play.
