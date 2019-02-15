@@ -1,6 +1,6 @@
 # qt-video-wlr
 
-Proof of concept pip-mode-like video player for wlroots based wayland compositor
+Qt pip-mode-like video player for wlroots based wayland compositors.
 
 To compile:
 
