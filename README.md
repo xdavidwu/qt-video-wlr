@@ -14,8 +14,20 @@ g++ qt-video-wlr-bg.cpp wlr-layer-shell-unstable-v1-protocol.o xdg-shell-protoco
 
 To run:
 
-```sh
-./qt-video-wlr FILES...
+```
+Usage: ./qt-video-wlr [options] FILE...
+Qt pip-mode-like video player for wlroots based wayland compositor
+
+Options:
+  -h, --help             Displays this help.
+  -v, --version          Displays version information.
+  -l, --layer <layer>    Layer to render on, background, bottom, top or
+                         overlay. Defaults to top.
+  -w, --width <width>    Widget width. 0 to use max width. Defaults to 320.
+  -e, --height <height>  Widget height. 0 to use max height. Defaults to 240.
+
+Arguments:
+  FILE                   Files to play.
 ```
 
 Paths are based on Archlinux and might be different on other distro.
