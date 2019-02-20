@@ -61,8 +61,10 @@ struct zwlr_layer_surface_v1_listener layer_surface_listener = {
 };
 
 void playerStateSlot(QMediaPlayer::State state){
-	if(state == QMediaPlayer::StoppedState)
+	if(state == QMediaPlayer::StoppedState){
+		zwlr_layer_surface_v1_destroy(layer_surface);
 		app->quit();
+	}
 }
 
 int main(int argc,char *argv[]){
