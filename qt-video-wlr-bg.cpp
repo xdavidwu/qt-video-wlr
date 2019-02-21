@@ -52,7 +52,7 @@ static void layer_surface_configure(void *data,
 static void layer_surface_closed(void *data,
 		struct zwlr_layer_surface_v1 *surface) {
 	zwlr_layer_surface_v1_destroy(surface);
-	wl_surface_destroy(wl_surface);
+	app->quit();
 }
 
 struct zwlr_layer_surface_v1_listener layer_surface_listener = {
