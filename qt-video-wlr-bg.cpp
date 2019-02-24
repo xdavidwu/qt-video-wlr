@@ -92,9 +92,9 @@ int main(int argc,char *argv[]){
 	QCommandLineOption volumeOption(QStringList() << "s" << "volume",
 		"Linear sound volume, [0,100]. Defaults to 100.", "volume");
 	QCommandLineOption positionOption(QStringList() << "p" << "position",
-		"Widget position, top, top-left, top-right, bottom, "
-		"bottom-left, bottom-right, left or right. Defaults "
-		"to bottom-right.", "position");
+		"Widget position, center, top, top-left, top-right, "
+		"bottom, bottom-left, bottom-right, left ro right. "
+		"Defaults to bottom-right.", "position");
 	QCommandLineOption loopOption(QStringList() << "n" << "no-loop",
 		"Do not loop. Defaults to loop.");
 	QCommandLineOption marginOption(QStringList() << "m" << "margin",
@@ -150,7 +150,9 @@ int main(int argc,char *argv[]){
 	}
 	if(parser.isSet(positionOption)){
 		QString str = parser.value(positionOption);
-		if(str == "top")
+		if(str == "center")
+			anchor = 0;
+		else if(str == "top")
 			anchor = ZWLR_LAYER_SURFACE_V1_ANCHOR_TOP;
 		else if(str == "top-left")
 			anchor = ZWLR_LAYER_SURFACE_V1_ANCHOR_TOP |
