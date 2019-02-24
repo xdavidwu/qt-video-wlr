@@ -97,6 +97,17 @@ int main(int argc,char *argv[]){
 		"to bottom-right.", "position");
 	QCommandLineOption loopOption(QStringList() << "n" << "no-loop",
 		"Do not loop. Defaults to loop.");
+	QCommandLineOption marginOption(QStringList() << "m" << "margin",
+		"Widget margin. Edge-specific options take precedence if specified. "
+		"Defaults to 0.","margin");
+	QCommandLineOption topMarginOption(QStringList() << "top-margin",
+		"Widget top margin. Defaults to 0.","margin");
+	QCommandLineOption rightMarginOption(QStringList() << "right-margin",
+		"Widget right margin. Defaults to 0.","margin");
+	QCommandLineOption bottomMarginOption(QStringList() << "bottom-margin",
+		"Widget bottom margin. Defaults to 0.","margin");
+	QCommandLineOption leftMarginOption(QStringList() << "left-margin",
+		"Widget left margin. Defaults to 0.","margin");
 	parser.addOption(layerOption);
 	parser.addOption(widthOption);
 	parser.addOption(heightOption);
@@ -104,11 +115,18 @@ int main(int argc,char *argv[]){
 	parser.addOption(volumeOption);
 	parser.addOption(positionOption);
 	parser.addOption(loopOption);
+	parser.addOption(marginOption);
+	parser.addOption(topMarginOption);
+	parser.addOption(rightMarginOption);
+	parser.addOption(bottomMarginOption);
+	parser.addOption(leftMarginOption);
 	parser.process(*app);
 
 	uint32_t layer = ZWLR_LAYER_SHELL_V1_LAYER_TOP;
 	uint32_t anchor = ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT |
 		ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM;
+	int32_t top_margin = 0, right_margin = 0, bottom_margin = 0,
+		left_margin = 0;
 	if(parser.isSet(layerOption)){
 		QString str = parser.value(layerOption);
 		if(str == "background")
@@ -156,6 +174,32 @@ int main(int argc,char *argv[]){
 		if(height == 0)
 			anchor |= ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM;
 	}
+	if(parser.isSet(marginOption)){
+		bool ok;
+		top_margin = right_margin = bottom_margin = left_margin =
+			parser.value(marginOption).toInt(&ok, 10);
+		if(!ok||width < 0) parser.showHelp(1);
+	}
+	if(parser.isSet(topMarginOption)){
+		bool ok;
+		top_margin = parser.value(topMarginOption).toInt(&ok, 10);
+		if(!ok||width < 0) parser.showHelp(1);
+	}
+	if(parser.isSet(rightMarginOption)){
+		bool ok;
+		right_margin = parser.value(rightMarginOption).toInt(&ok, 10);
+		if(!ok||width < 0) parser.showHelp(1);
+	}
+	if(parser.isSet(bottomMarginOption)){
+		bool ok;
+		bottom_margin = parser.value(bottomMarginOption).toInt(&ok, 10);
+		if(!ok||width < 0) parser.showHelp(1);
+	}
+	if(parser.isSet(leftMarginOption)){
+		bool ok;
+		left_margin = parser.value(leftMarginOption).toInt(&ok, 10);
+		if(!ok||width < 0) parser.showHelp(1);
+	}
 
 	QPlatformNativeInterface *native = QGuiApplication::platformNativeInterface();
 	struct wl_display *display = (struct wl_display *)
@@ -194,6 +238,8 @@ int main(int argc,char *argv[]){
 		native->nativeResourceForWindow("surface", root->windowHandle()));
 	layer_surface = zwlr_layer_shell_v1_get_layer_surface(layer_shell,
 		wl_surface, NULL, layer, "foo");
+	zwlr_layer_surface_v1_set_margin(layer_surface, top_margin, right_margin,
+		bottom_margin, left_margin);
 	zwlr_layer_surface_v1_set_size(layer_surface, width, height);
 	zwlr_layer_surface_v1_set_anchor(layer_surface, anchor);
 	zwlr_layer_surface_v1_add_listener(layer_surface, &layer_surface_listener, layer_surface);
