@@ -99,7 +99,7 @@ int main(int argc,char *argv[]){
 		"Do not loop. Defaults to loop.");
 	QCommandLineOption marginOption(QStringList() << "m" << "margin",
 		"Widget margin. Edge-specific options take precedence if specified. "
-		"Defaults to 0.","margin");
+		"No effect when not sticking to the edge. Defaults to 0.","margin");
 	QCommandLineOption topMarginOption(QStringList() << "top-margin",
 		"Widget top margin. Defaults to 0.","margin");
 	QCommandLineOption rightMarginOption(QStringList() << "right-margin",
