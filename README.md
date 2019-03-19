@@ -45,5 +45,3 @@ Arguments:
 ```
 
 Paths are based on Archlinux and might be different on other distro.
-
-You might need to change the variable name `namespace` in wlr-layer-shell-unstable-v1-client-protocol.h to make it work with c++ compilers.
