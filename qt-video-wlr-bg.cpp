@@ -1,13 +1,13 @@
-#include <QtCore/QUrl>
-#include <QtCore/QFileInfo>
-#include <QtCore/QCommandLineParser>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QPushButton>
-#include <QtGui/5.12.1/QtGui/qpa/qplatformnativeinterface.h>
-#include <QtMultimedia/QMediaPlayer>
-#include <QtMultimedia/QMediaPlaylist>
-#include <QtMultimediaWidgets/QVideoWidget>
+#include <QUrl>
+#include <QWidget>
+#include <QFileInfo>
+#include <QPushButton>
+#include <QApplication>
+#include <QMediaPlayer>
+#include <QVideoWidget>
+#include <QMediaPlaylist>
+#include <QCommandLineParser>
+#include <5.12.2/QtGui/qpa/qplatformnativeinterface.h>
 #include <iostream>
 #include "wlr-layer-shell-unstable-v1-client-protocol.h"
 

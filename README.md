@@ -2,20 +2,19 @@
 
 Qt pip-mode-like video player for wlroots based wayland compositors.
 
-To compile:
+To install:
 
 ```sh
-wayland-scanner client-protocol wlr-layer-shell-unstable-v1.xml wlr-layer-shell-unstable-v1-client-protocol.h
-wayland-scanner private-code wlr-layer-shell-unstable-v1.xml wlr-layer-shell-unstable-v1-protocol.c
-wayland-scanner private-code /usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml xdg-shell-protocol.c
-gcc xdg-shell-protocol.c wlr-layer-shell-unstable-v1-protocol.c -c
-g++ qt-video-wlr-bg.cpp wlr-layer-shell-unstable-v1-protocol.o xdg-shell-protocol.o -I /usr/include/qt/ -fpic -lQt5Widgets -lQt5Core -lQt5Multimedia -lQt5MultimediaWidgets -lQt5Gui -lwayland-client -o qt-video-wlr
+meson build
+cd build
+ninja
+sudo ninja install
 ```
 
 To run:
 
 ```
-Usage: ./qt-video-wlr [options] FILE...
+Usage: qt-video-wlr [options] FILE...
 Qt pip-mode-like video player for wlroots based wayland compositor
 
 Options:
@@ -43,5 +42,3 @@ Options:
 Arguments:
   FILE                       Files to play.
 ```
-
-Paths are based on Archlinux and might be different on other distro.
