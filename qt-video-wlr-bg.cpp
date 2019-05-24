@@ -7,7 +7,7 @@
 #include <QVideoWidget>
 #include <QMediaPlaylist>
 #include <QCommandLineParser>
-#include <5.12.2/QtGui/qpa/qplatformnativeinterface.h>
+#include <qpa/qplatformnativeinterface.h>
 #include <iostream>
 #include "wlr-layer-shell-unstable-v1-client-protocol.h"
 

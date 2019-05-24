@@ -18,4 +18,5 @@ protocols_dep=declare_dependency(link_with: lib_protocols,sources: protocols_hea
 
 qt5=import('qt5')
 qt5_dep=dependency('qt5',modules: ['Widgets','Core','Multimedia','MultimediaWidgets','Gui'])
-executable('qt-video-wlr',['qt-video-wlr-bg.cpp'],dependencies: [qt5_dep,protocols_dep],install: true)
+qtgui=dependency('Qt5Gui')
+executable('qt-video-wlr',['qt-video-wlr-bg.cpp'],dependencies: [qt5_dep,protocols_dep],cpp_args: '-I'+join_paths(qtgui.get_pkgconfig_variable('includedir'),'QtGui',qtgui.version(),'QtGui'),install: true)
