@@ -92,8 +92,8 @@ int main(int argc,char *argv[]){
 	QCommandLineOption volumeOption(QStringList() << "s" << "volume",
 		"Linear sound volume, [0,100]. Defaults to 100.", "volume");
 	QCommandLineOption positionOption(QStringList() << "p" << "position",
-		"Widget position, center, top, top-left, top-right, "
-		"bottom, bottom-left, bottom-right, left ro right. "
+		"Widget position: center, top, top-left, top-right, "
+		"bottom, bottom-left, bottom-right, left or right. "
 		"Defaults to bottom-right.", "position");
 	QCommandLineOption loopOption(QStringList() << "n" << "no-loop",
 		"Do not loop. Defaults to loop.");
