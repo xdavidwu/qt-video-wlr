@@ -241,7 +241,7 @@ int main(int argc,char *argv[]){
 	wl_surface = static_cast<struct wl_surface *>(
 		native->nativeResourceForWindow("surface", root->windowHandle()));
 	layer_surface = zwlr_layer_shell_v1_get_layer_surface(layer_shell,
-		wl_surface, NULL, layer, "foo");
+		wl_surface, NULL, layer, "video-player");
 	zwlr_layer_surface_v1_set_margin(layer_surface, top_margin, right_margin,
 		bottom_margin, left_margin);
 	zwlr_layer_surface_v1_set_size(layer_surface, width, height);
