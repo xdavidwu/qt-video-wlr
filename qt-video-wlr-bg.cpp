@@ -256,11 +256,11 @@ int main(int argc,char *argv[]){
 		QColor qcolor(parser.value(colorOption));
 		if(!qcolor.isValid()) parser.showHelp(1);
 		QPalette pal;
-		pal.setColor(QPalette::Background, qcolor);
+		pal.setColor(QPalette::Window, qcolor);
 		videoWidget->setAutoFillBackground(true);
 		videoWidget->setPalette(pal);
 		QPalette pal2;
-		pal2.setColor(QPalette::Background, "#00000000");
+		pal2.setColor(QPalette::Window, "#00000000");
 		root->setAutoFillBackground(true);
 		root->setPalette(pal2);
 	}
