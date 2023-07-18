@@ -171,10 +171,12 @@ int main(int argc,char *argv[]){
 			anchor = ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT;
 		else if(str != "bottom-right")
 			parser.showHelp(1);
-		if(width == 0)
-			anchor |= ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT;
-		if(height == 0)
-			anchor |= ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM;
+		if (width == 0)
+			anchor |= ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT |
+				ZWLR_LAYER_SURFACE_V1_ANCHOR_LEFT;
+		if (height == 0)
+			anchor |= ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM |
+				ZWLR_LAYER_SURFACE_V1_ANCHOR_TOP;
 	}
 	if(parser.isSet(marginOption)){
 		bool ok;
