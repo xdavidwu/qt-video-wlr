@@ -136,6 +136,8 @@ int main(int argc,char *argv[]){
 
 	layerShell->setKeyboardInteractivity(LayerShellQt::Window::KeyboardInteractivityNone);
 
+	layerShell->setDesiredOutput(nullptr);
+
 	QVBoxLayout layout;
 	QVideoWidget videoWidget;
 	layout.addWidget(&videoWidget);
