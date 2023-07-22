@@ -57,10 +57,12 @@ int main(int argc,char *argv[]){
 		"Widget bottom margin. Defaults to 0.", "margin", "0");
 	QCommandLineOption leftMarginOption("left-margin",
 		"Widget left margin. Defaults to 0.", "margin", "0");
+	QCommandLineOption exclusiveZoneOption({"x", "exclusive-zone"},
+		"Exclusive zone distance, -1 to draw over panels. Defaults to 0.", "distance", "0");
 	parser.addOptions({ layerOption, widthOption, heightOption, colorOption,
 		volumeOption, positionOption, noLoopOption, marginOption,
 		topMarginOption, rightMarginOption, bottomMarginOption,
-		leftMarginOption });
+		leftMarginOption, exclusiveZoneOption });
 	parser.process(app);
 
 	bool ok;
@@ -133,6 +135,10 @@ int main(int argc,char *argv[]){
 	left_margin = parser.value(leftMarginOption).toInt(&ok);
 	if (!ok) parser.showHelp(1);
 	layerShell->setMargins({left_margin, top_margin, right_margin, bottom_margin});
+
+	int32_t exclusive_zone = parser.value(exclusiveZoneOption).toInt(&ok);
+	if (!ok || exclusive_zone < -1) parser.showHelp(1);
+	layerShell->setExclusiveZone(exclusive_zone);
 
 	layerShell->setKeyboardInteractivity(LayerShellQt::Window::KeyboardInteractivityNone);
 
